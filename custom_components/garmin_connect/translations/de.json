@@ -27,12 +27,14 @@
         "data": {
           "password": "Passwort",
           "username": "E-Mail",
-          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)"
+          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)",
+          "store_credentials": "Zugangsdaten als Fallback für automatische Neuauthentifizierung speichern"
         },
         "data_description": {
           "password": "Dein Garmin-Connect-Passwort",
           "username": "Deine Garmin-Connect-E-Mail-Adresse",
-          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind"
+          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind",
+          "store_credentials": "Passwort lokal speichern, um sich bei Ablauf der Sitzungstokens automatisch neu anzumelden (funktioniert nur ohne 2FA)"
         },
         "description": "Gib deine Garmin-Connect-Zugangsdaten ein, um dich erneut zu authentifizieren.",
         "title": "Integration erneut authentifizieren"
@@ -41,12 +43,14 @@
         "data": {
           "password": "Passwort",
           "username": "E-Mail",
-          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)"
+          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)",
+          "store_credentials": "Zugangsdaten als Fallback für automatische Neuauthentifizierung speichern"
         },
         "data_description": {
           "password": "Dein Garmin-Connect-Passwort",
           "username": "Deine Garmin-Connect-E-Mail-Adresse",
-          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind"
+          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind",
+          "store_credentials": "Passwort lokal speichern, um sich bei Ablauf der Sitzungstokens automatisch neu anzumelden (funktioniert nur ohne 2FA)"
         },
         "description": "Aktualisiere deine Garmin-Connect-Zugangsdaten.",
         "title": "Integration neu konfigurieren"
@@ -55,12 +59,14 @@
         "data": {
           "password": "Passwort",
           "username": "E-Mail",
-          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)"
+          "is_cn": "Garmin Connect China verwenden (cn.garmin.com)",
+          "store_credentials": "Zugangsdaten als Fallback für automatische Neuauthentifizierung speichern"
         },
         "data_description": {
           "password": "Dein Garmin-Connect-Passwort",
           "username": "Deine Garmin-Connect-E-Mail-Adresse",
-          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind"
+          "is_cn": "Aktivieren für Konten, die auf der chinesischen Garmin-Connect-Plattform registriert sind",
+          "store_credentials": "Passwort lokal speichern, um sich bei Ablauf der Sitzungstokens automatisch neu anzumelden (funktioniert nur ohne 2FA)"
         },
         "description": "Gib deine Garmin-Connect-Zugangsdaten ein."
       }
