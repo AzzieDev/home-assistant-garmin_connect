@@ -300,6 +300,36 @@ async def test_reauth_same_account_updates_tokens_and_reloads() -> None:
     flow.hass.config_entries.async_reload.assert_awaited_once_with("test_entry_id")
 
 
+async def test_reauth_stores_credentials_when_enabled() -> None:
+    """When store_credentials is enabled, password and username must be persisted in entry data."""
+    flow, entry, client = _reauth_flow("123456789")
+    flow._password = "secret_password"
+    flow._store_credentials = True
+    with patch("custom_components.garmin_connect.config_flow.GarminClient", return_value=client):
+        result = await flow._async_finish_reauth()
+
+    assert result["type"] == "abort"
+    assert result["reason"] == "reauth_successful"
+    _, kwargs = flow.hass.config_entries.async_update_entry.call_args
+    assert kwargs["data"]["password"] == "secret_password"
+    assert kwargs["data"]["username"] == "test@example.com"
+    assert kwargs["data"]["store_credentials"] is True
+
+
+async def test_reauth_omits_credentials_when_disabled() -> None:
+    """When store_credentials is disabled, password must not be present in entry data."""
+    flow, entry, client = _reauth_flow("123456789")
+    flow._password = "secret_password"
+    flow._store_credentials = False
+    with patch("custom_components.garmin_connect.config_flow.GarminClient", return_value=client):
+        result = await flow._async_finish_reauth()
+
+    assert result["type"] == "abort"
+    assert result["reason"] == "reauth_successful"
+    _, kwargs = flow.hass.config_entries.async_update_entry.call_args
+    assert "password" not in kwargs["data"]
+
+
 async def test_reauth_upgrades_legacy_email_unique_id() -> None:
     """Entries keyed by email (pre-profile-id) are accepted and re-keyed by profile id."""
     flow, entry, client = _reauth_flow("Test@Example.com")

@@ -25,6 +25,7 @@ async def test_diagnostics_redacts_sensitive_data() -> None:
         "token": "secret_token",
         "refresh_token": "secret_refresh",
         "client_id": "secret_client_id",
+        "password": "secret_password",
         "username": "test@example.com",
     }
 
@@ -47,6 +48,7 @@ async def test_diagnostics_redacts_sensitive_data() -> None:
     assert result["entry_data"]["token"] == "**REDACTED**"
     assert result["entry_data"]["refresh_token"] == "**REDACTED**"
     assert result["entry_data"]["client_id"] == "**REDACTED**"
+    assert result["entry_data"]["password"] == "**REDACTED**"
     # Non-redacted fields should remain
     assert result["entry_data"]["username"] == "test@example.com"
 

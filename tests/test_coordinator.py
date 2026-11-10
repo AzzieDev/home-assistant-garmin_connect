@@ -5,7 +5,8 @@ from datetime import date
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from ha_garmin import GarminAuthError, GarminConnectError
+from ha_garmin import GarminAuthError, GarminConnectError, GarminMFARequired
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
@@ -211,6 +212,68 @@ async def test_auth_error_maps_to_config_entry_auth_failed() -> None:
     client = AsyncMock()
     client.fetch_core_data = AsyncMock(side_effect=GarminAuthError("expired"))
     coordinator = _make_base(client)
+    with pytest.raises(ConfigEntryAuthFailed):
+        await coordinator._async_update_data()
+
+
+async def test_auth_error_reauth_fallback_success() -> None:
+    """When auth error occurs and credentials stored, re-login and retry fetch."""
+    client = AsyncMock()
+    # First fetch fails with auth error, second fetch after re-login succeeds
+    client.fetch_core_data = AsyncMock(side_effect=[GarminAuthError("expired"), {"totalSteps": 1234}])
+    coordinator = _make_base(client)
+    coordinator.config_entry.data = {
+        **coordinator.config_entry.data,
+        CONF_USERNAME: "test@example.com",
+        CONF_PASSWORD: "secret_password",
+    }
+    coordinator.hass.async_add_executor_job = AsyncMock(side_effect=lambda fn, *a: fn(*a))
+
+    def _mock_login(u, p):
+        coordinator.auth.di_token = "new_di_token"
+        coordinator.auth.di_refresh_token = "new_di_refresh"
+
+    coordinator.auth.login = MagicMock(side_effect=_mock_login)
+
+    data = await coordinator._async_update_data()
+    assert data == {"totalSteps": 1234}
+    coordinator.auth.login.assert_called_once_with("test@example.com", "secret_password")
+    coordinator.hass.config_entries.async_update_entry.assert_called_once()
+    _, kwargs = coordinator.hass.config_entries.async_update_entry.call_args
+    assert kwargs["data"][CONF_TOKEN] == "new_di_token"
+    assert kwargs["data"][CONF_PASSWORD] == "secret_password"
+
+
+async def test_auth_error_reauth_fallback_mfa_fails() -> None:
+    """When re-login requires MFA, raise ConfigEntryAuthFailed."""
+    client = AsyncMock()
+    client.fetch_core_data = AsyncMock(side_effect=GarminAuthError("expired"))
+    coordinator = _make_base(client)
+    coordinator.config_entry.data = {
+        **coordinator.config_entry.data,
+        CONF_USERNAME: "test@example.com",
+        CONF_PASSWORD: "secret_password",
+    }
+    coordinator.hass.async_add_executor_job = AsyncMock(side_effect=lambda fn, *a: fn(*a))
+    coordinator.auth.login = MagicMock(side_effect=GarminMFARequired("mfa"))
+
+    with pytest.raises(ConfigEntryAuthFailed):
+        await coordinator._async_update_data()
+
+
+async def test_auth_error_reauth_fallback_wrong_password_fails() -> None:
+    """When re-login fails with bad credentials, raise ConfigEntryAuthFailed."""
+    client = AsyncMock()
+    client.fetch_core_data = AsyncMock(side_effect=GarminAuthError("expired"))
+    coordinator = _make_base(client)
+    coordinator.config_entry.data = {
+        **coordinator.config_entry.data,
+        CONF_USERNAME: "test@example.com",
+        CONF_PASSWORD: "wrong_password",
+    }
+    coordinator.hass.async_add_executor_job = AsyncMock(side_effect=lambda fn, *a: fn(*a))
+    coordinator.auth.login = MagicMock(side_effect=GarminAuthError("bad creds"))
+
     with pytest.raises(ConfigEntryAuthFailed):
         await coordinator._async_update_data()
 
