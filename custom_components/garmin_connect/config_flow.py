@@ -49,8 +49,8 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
-        vol.Optional(CONF_IS_CN, default=False): bool,
         vol.Optional(CONF_STORE_CREDENTIALS, default=False): bool,
+        vol.Optional(CONF_IS_CN, default=False): bool,
     }
 )
 
@@ -173,8 +173,8 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_USERNAME): str,
                     vol.Required(CONF_PASSWORD): str,
-                    vol.Optional(CONF_IS_CN, default=current_is_cn): bool,
                     vol.Optional(CONF_STORE_CREDENTIALS, default=current_store_credentials): bool,
+                    vol.Optional(CONF_IS_CN, default=current_is_cn): bool,
                 }
             ),
             errors=errors,

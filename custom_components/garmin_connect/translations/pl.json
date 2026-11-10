@@ -28,13 +28,13 @@
           "password": "Hasło",
           "username": "E-mail",
           "is_cn": "Użyj Garmin Connect China (cn.garmin.com)",
-          "store_credentials": "Zapisz dane logowania jako kopię zapasową do automatycznego ponownego uwierzytelniania"
+          "store_credentials": "Zapisz dane logowania"
         },
         "data_description": {
           "password": "Twoje hasło Garmin Connect",
           "username": "Adres e-mail konta Garmin Connect",
           "is_cn": "Włącz dla kont zarejestrowanych na chińskiej platformie Garmin Connect",
-          "store_credentials": "Zapisz hasło lokalnie, aby automatycznie zalogować się ponownie po wygaśnięciu tokenów sesji (działa tylko bez 2FA)"
+          "store_credentials": "Automatycznie odnawiaj uwierzytelnienie po wygaśnięciu tokenów sesji"
         },
         "description": "Wprowadź dane logowania Garmin Connect, aby ponownie się uwierzytelnić.",
         "title": "Ponowne uwierzytelnienie integracji"
@@ -44,13 +44,13 @@
           "password": "Hasło",
           "username": "E-mail",
           "is_cn": "Użyj Garmin Connect China (cn.garmin.com)",
-          "store_credentials": "Zapisz dane logowania jako kopię zapasową do automatycznego ponownego uwierzytelniania"
+          "store_credentials": "Zapisz dane logowania"
         },
         "data_description": {
           "password": "Twoje hasło Garmin Connect",
           "username": "Adres e-mail konta Garmin Connect",
           "is_cn": "Włącz dla kont zarejestrowanych na chińskiej platformie Garmin Connect",
-          "store_credentials": "Zapisz hasło lokalnie, aby automatycznie zalogować się ponownie po wygaśnięciu tokenów sesji (działa tylko bez 2FA)"
+          "store_credentials": "Automatycznie odnawiaj uwierzytelnienie po wygaśnięciu tokenów sesji"
         },
         "description": "Zaktualizuj dane logowania Garmin Connect.",
         "title": "Zmiana konfiguracji integracji"
@@ -60,13 +60,13 @@
           "password": "Hasło",
           "username": "E-mail",
           "is_cn": "Użyj Garmin Connect China (cn.garmin.com)",
-          "store_credentials": "Zapisz dane logowania jako kopię zapasową do automatycznego ponownego uwierzytelniania"
+          "store_credentials": "Zapisz dane logowania"
         },
         "data_description": {
           "password": "Twoje hasło Garmin Connect",
           "username": "Adres e-mail konta Garmin Connect",
           "is_cn": "Włącz dla kont zarejestrowanych na chińskiej platformie Garmin Connect",
-          "store_credentials": "Zapisz hasło lokalnie, aby automatycznie zalogować się ponownie po wygaśnięciu tokenów sesji (działa tylko bez 2FA)"
+          "store_credentials": "Automatycznie odnawiaj uwierzytelnienie po wygaśnięciu tokenów sesji"
         },
         "description": "Wprowadź dane logowania Garmin Connect."
       }

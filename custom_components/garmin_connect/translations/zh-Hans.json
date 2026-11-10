@@ -28,13 +28,13 @@
           "password": "密码",
           "username": "邮箱",
           "is_cn": "使用 Garmin Connect 中国版 (cn.garmin.com)",
-          "store_credentials": "保存凭据作为备用，用于自动重新认证"
+          "store_credentials": "保存凭据"
         },
         "data_description": {
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "在本地保存密码，以便在会话令牌过期时自动重新登录（仅在未启用双重认证时有效）"
+          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
         },
         "description": "请输入您的 Garmin Connect 凭据以重新认证。",
         "title": "重新认证集成"
@@ -44,13 +44,13 @@
           "password": "密码",
           "username": "邮箱",
           "is_cn": "使用 Garmin Connect 中国版 (cn.garmin.com)",
-          "store_credentials": "保存凭据作为备用，用于自动重新认证"
+          "store_credentials": "保存凭据"
         },
         "data_description": {
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "在本地保存密码，以便在会话令牌过期时自动重新登录（仅在未启用双重认证时有效）"
+          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
         },
         "description": "更新您的 Garmin Connect 凭据。",
         "title": "重新配置集成"
@@ -60,13 +60,13 @@
           "password": "密码",
           "username": "邮箱",
           "is_cn": "使用 Garmin Connect 中国版 (cn.garmin.com)",
-          "store_credentials": "保存凭据作为备用，用于自动重新认证"
+          "store_credentials": "保存凭据"
         },
         "data_description": {
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "在本地保存密码，以便在会话令牌过期时自动重新登录（仅在未启用双重认证时有效）"
+          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
         },
         "description": "请输入您的 Garmin Connect 凭据。"
       }
