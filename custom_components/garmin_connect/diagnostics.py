@@ -15,6 +15,7 @@ TO_REDACT = {
     "token",
     "refresh_token",
     "client_id",
+    "password",
     "displayName",
     "fullName",
     "userName",

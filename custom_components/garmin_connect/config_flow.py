@@ -30,6 +30,7 @@ from .const import (
     CONF_IS_CN,
     CONF_REFRESH_TOKEN,
     CONF_SCAN_INTERVAL,
+    CONF_STORE_CREDENTIALS,
     CONF_TOKEN,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -49,6 +50,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
         vol.Optional(CONF_IS_CN, default=False): bool,
+        vol.Optional(CONF_STORE_CREDENTIALS, default=False): bool,
     }
 )
 
@@ -68,6 +70,8 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
         """Initialize config flow."""
         self._auth: GarminAuth | None = None
         self._username: str | None = None
+        self._password: str | None = None
+        self._store_credentials: bool = False
         self._is_cn: bool = False
 
     @staticmethod
@@ -76,14 +80,23 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
         return GarminConnectOptionsFlow()
 
     def _token_data(self) -> dict[str, Any]:
-        """Return token data from current auth state."""
+        """Return token data from current auth state.
+
+        Includes username and password only when the user opted into storing
+        credentials as a fallback for automatic re-authentication.
+        """
         if TYPE_CHECKING:
             assert self._auth is not None
-        return {
+        data: dict[str, Any] = {
             CONF_TOKEN: self._auth.di_token,
             CONF_REFRESH_TOKEN: self._auth.di_refresh_token,
             CONF_CLIENT_ID: self._auth.di_client_id,
         }
+        if self._store_credentials and self._username and self._password:
+            data[CONF_USERNAME] = self._username
+            data[CONF_PASSWORD] = self._password
+            data[CONF_STORE_CREDENTIALS] = True
+        return data
 
     async def _async_login(self, username: str, password: str) -> None:
         """Run Garmin login in the executor."""
@@ -145,8 +158,15 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
     def _async_show_login_form(
         self, step_id: str, entry: ConfigEntry, errors: dict[str, str]
     ) -> ConfigFlowResult:
-        """Show the reauth/reconfigure login form, defaulting CN to the entry's setting."""
+        """Show the reauth/reconfigure login form.
+
+        Defaults region (China) and fallback credential storage preference to
+        the entry's existing settings so the user's choices are preserved.
+        """
         current_is_cn = entry.options.get(CONF_IS_CN, False)
+        current_store_credentials = entry.data.get(CONF_STORE_CREDENTIALS, False) or bool(
+            entry.data.get(CONF_PASSWORD)
+        )
         return self.async_show_form(
             step_id=step_id,
             data_schema=vol.Schema(
@@ -154,6 +174,7 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_USERNAME): str,
                     vol.Required(CONF_PASSWORD): str,
                     vol.Optional(CONF_IS_CN, default=current_is_cn): bool,
+                    vol.Optional(CONF_STORE_CREDENTIALS, default=current_store_credentials): bool,
                 }
             ),
             errors=errors,
@@ -203,6 +224,8 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             self._username = user_input[CONF_USERNAME]
+            self._password = user_input[CONF_PASSWORD]
+            self._store_credentials = user_input.get(CONF_STORE_CREDENTIALS, False)
             self._is_cn = user_input.get(CONF_IS_CN, False)
             self._auth = GarminAuth(is_cn=self._is_cn)
 
@@ -272,6 +295,8 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             self._username = user_input[CONF_USERNAME]
+            self._password = user_input[CONF_PASSWORD]
+            self._store_credentials = user_input.get(CONF_STORE_CREDENTIALS, False)
             self._is_cn = user_input.get(CONF_IS_CN, False)
             self._auth = GarminAuth(is_cn=self._is_cn)
 
@@ -301,6 +326,8 @@ class GarminConnectConfigFlow(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             self._username = user_input[CONF_USERNAME]
+            self._password = user_input[CONF_PASSWORD]
+            self._store_credentials = user_input.get(CONF_STORE_CREDENTIALS, False)
             self._is_cn = user_input.get(CONF_IS_CN, False)
             self._auth = GarminAuth(is_cn=self._is_cn)
 

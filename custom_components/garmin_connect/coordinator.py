@@ -13,8 +13,9 @@ from typing import Any
 
 from aiohttp import ClientError
 from ha_garmin import GarminAuth, GarminClient
-from ha_garmin.exceptions import GarminAuthError, GarminConnectError
+from ha_garmin.exceptions import GarminAuthError, GarminConnectError, GarminMFARequired
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import issue_registry as ir
@@ -144,6 +145,55 @@ class BaseGarminCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 },
             )
 
+    async def _async_reauth_fallback(self) -> bool:
+        """Attempt to re-authenticate with stored username and password.
+
+        Triggered when a poll or initial setup refresh fails with GarminAuthError
+        (e.g. session token expired and refresh token was rejected by Garmin SSO).
+
+        If the user opted into storing credentials, this performs a headless
+        login via executor to acquire a fresh DI token set, persists the new tokens
+        to config entry storage, and lets the caller retry the fetch.
+
+        Returns False if credentials are not stored, if the account requires
+        interactive two-factor authentication (MFA), or if login fails, leaving
+        ConfigEntryAuthFailed to prompt the user in the UI.
+        """
+        username = self.config_entry.data.get(CONF_USERNAME)
+        password = self.config_entry.data.get(CONF_PASSWORD)
+        if not username or not password:
+            return False
+
+        _LOGGER.info(
+            "Attempting automatic re-login with stored credentials for %s",
+            self.config_entry.title,
+        )
+        try:
+            await self.hass.async_add_executor_job(
+                self.auth.login,
+                username,
+                password,
+            )
+            self._update_tokens_if_changed()
+            _LOGGER.info(
+                "Automatic re-login succeeded for %s",
+                self.config_entry.title,
+            )
+            return True
+        except GarminMFARequired:
+            _LOGGER.warning(
+                "Automatic re-login failed for %s: two-factor authentication (MFA) required",
+                self.config_entry.title,
+            )
+            return False
+        except (GarminAuthError, GarminConnectError, ClientError) as err:
+            _LOGGER.warning(
+                "Automatic re-login failed for %s: %s",
+                self.config_entry.title,
+                err,
+            )
+            return False
+
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data, mapping library errors to coordinator errors."""
         try:
@@ -154,6 +204,25 @@ class BaseGarminCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 f"Garmin {self.data_name} refresh exceeded {UPDATE_TIMEOUT} seconds"
             ) from err
         except GarminAuthError as err:
+            _LOGGER.warning(
+                "Garmin authentication failed fetching %s data: %s",
+                self.data_name,
+                err,
+            )
+            # Try recovering silently with saved credentials before failing the entry.
+            if await self._async_reauth_fallback():
+                try:
+                    async with asyncio.timeout(UPDATE_TIMEOUT):
+                        return await self._fetch()
+                except TimeoutError as retry_err:
+                    raise UpdateFailed(
+                        f"Garmin {self.data_name} refresh exceeded {UPDATE_TIMEOUT} seconds"
+                    ) from retry_err
+                except GarminAuthError as retry_err:
+                    raise ConfigEntryAuthFailed("Authentication failed") from retry_err
+                except (GarminConnectError, ClientError) as retry_err:
+                    _LOGGER.debug("Error fetching %s data: %s", self.data_name, retry_err)
+                    raise UpdateFailed(f"Error fetching {self.data_name} data: {retry_err}") from retry_err
             raise ConfigEntryAuthFailed("Authentication failed") from err
         except (GarminConnectError, ClientError) as err:
             _LOGGER.debug("Error fetching %s data: %s", self.data_name, err)

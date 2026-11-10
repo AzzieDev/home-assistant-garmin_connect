@@ -12,6 +12,7 @@ FRONTEND_CARD_FILE: Final = "garmin-polyline-card.js"
 CONF_TOKEN: Final = "token"
 CONF_REFRESH_TOKEN: Final = "refresh_token"
 CONF_CLIENT_ID: Final = "client_id"
+CONF_STORE_CREDENTIALS: Final = "store_credentials"
 
 # Options
 CONF_IS_CN: Final = "is_cn"
