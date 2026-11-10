@@ -34,7 +34,7 @@
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
+          "store_credentials": "在会话令牌过期时自动重新认证"
         },
         "description": "请输入您的 Garmin Connect 凭据以重新认证。",
         "title": "重新认证集成"
@@ -50,7 +50,7 @@
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
+          "store_credentials": "在会话令牌过期时自动重新认证"
         },
         "description": "更新您的 Garmin Connect 凭据。",
         "title": "重新配置集成"
@@ -66,7 +66,7 @@
           "password": "您的 Garmin Connect 密码",
           "username": "您的 Garmin Connect 邮箱地址",
           "is_cn": "为在中国 Garmin Connect 平台注册的账户启用",
-          "store_credentials": "会话过期时自动重新登录（需禁用双重认证）"
+          "store_credentials": "在会话令牌过期时自动重新认证"
         },
         "description": "请输入您的 Garmin Connect 凭据。"
       }
